@@ -123,11 +123,17 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
+# For a hidden HTML <input> element to submit the value of a variable called 'next'.
+# which is inside templates/registration/login.html
 LOGIN_REDIRECT_URL = 'dashboard'
 #  Tells Django which URL to redirect the user to after a successful login
 # if no next parameter is present in the request
 LOGIN_URL = 'login'
-#  The URL to redirect the user to log in (for example, views using the login_required
-# decorator)
+#  The URL to redirect the user to log in (for example, views using the login_required decorator)
 LOGOUT_URL = 'logout'
 # The URL to redirect the user to log out
+
+
+# SMTP Configurations for sending email
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
