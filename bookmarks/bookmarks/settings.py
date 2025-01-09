@@ -133,3 +133,7 @@ LOGIN_URL = 'login'
 #  The URL to redirect the user to log in (for example, views using the login_required decorator)
 LOGOUT_URL = 'logout'
 # The URL to redirect the user to log out
+
+
+# SMTP Configurations for sending email
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
