@@ -77,19 +77,27 @@ def register(request):
 def edit(request):
     if request.method == 'POST':
         user_form = UserEditForm(instance=request.user, data=request.POST)
+        # instance=request.user: Pre-fills the form with the currently logged-in user's data.
+        # data=request.POST: Populates the form with submitted data from the POST request to
+        # update the user’s information.
         profile_form = ProfileEditForm(instance=request.user.profile, data=request.POST, files=request.FILES)
+        # instance=request.user.profile: Pre-fills the form with data from the user's profile.
+        # data=request.POST: Populates the form with submitted data from the POST request to update profile fields.
+        # files=request.FILES: Includes any files (e.g., profile pictures) uploaded via the form.
 
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
+        return render(request, 'account/dashboard.html')
     else:
-        user_form = UserEditForm(instance=request.user)
+        user_form = UserEditForm(instance=request.user)     # This shows the user their current data in the form fields.
         profile_form = ProfileEditForm(instance=request.user.profile)
 
     return render(request,
                   'account/edit.html',
-                  {'user_form': user_form,
-                   'profile_form': profile_form
-                   }
+                  {
+                      'user_form': user_form,
+                      'profile_form': profile_form
+                  }
                   )
 
