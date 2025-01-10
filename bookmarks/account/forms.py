@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
+from .models import Profile
 
 
 class LoginForm(forms.Form):
@@ -23,3 +24,19 @@ class UserRegistrationForm(forms.ModelForm):
         if cd['password'] != cd['password2']:
             raise forms.ValidationError("Passwords don't match.")
         return cd['password2']
+
+
+# This will allow users to edit their first name, last name, and email, which are
+# attributes of the built-in Django user model.
+class UserEditForm(forms.ModelForm):
+    class Meta:
+        model = get_user_model()
+        fields = ['first_name', 'last_name', 'email']
+
+
+# This will allow users to edit the profile data that is saved in the custom Profile model.
+# Users will be able to edit their date of birth and upload an image for their profile picture.
+class ProfileEditForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['date_of_birth', 'photo']
