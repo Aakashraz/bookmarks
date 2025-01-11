@@ -89,10 +89,12 @@ def edit(request):
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-        messages.success(request,'Profile updated successfully.')
-        return redirect('dashboard')
+            messages.success(request, 'Profile updated successfully.')
+        else:
+            messages.error(request, 'Error updating profile')
+        # return redirect('dashboard')
     else:
-        user_form = UserEditForm(instance=request.user)     # This shows the user their current data in the form fields.
+        user_form = UserEditForm(instance=request.user)  # This shows the user their current data in the form fields.
         profile_form = ProfileEditForm(instance=request.user.profile)
 
     return render(request,
@@ -102,4 +104,3 @@ def edit(request):
                       'profile_form': profile_form
                   }
                   )
-
