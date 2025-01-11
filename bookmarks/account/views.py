@@ -1,9 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm
 from .models import Profile
+from django.contrib import messages
 
 
 def user_login(request):
@@ -88,7 +89,8 @@ def edit(request):
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-        return render(request, 'account/dashboard.html')
+        messages.success(request,'Profile updated successfully.')
+        return redirect('dashboard')
     else:
         user_form = UserEditForm(instance=request.user)     # This shows the user their current data in the form fields.
         profile_form = ProfileEditForm(instance=request.user.profile)
