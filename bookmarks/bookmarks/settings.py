@@ -140,3 +140,9 @@ LOGOUT_URL = 'logout'
 
 # SMTP Configurations for sending email
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Custom Authentication Backend
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'account.authentication.EmailAuthBackend',
+]
