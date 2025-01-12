@@ -141,8 +141,11 @@ LOGOUT_URL = 'logout'
 # SMTP Configurations for sending email
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+
 # Custom Authentication Backend
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'account.authentication.EmailAuthBackend',
 ]
+# The user credentials will be checked using ModelBackend, and if no user is returned, the credentials
+# will be checked using EmailAuthBackend.
