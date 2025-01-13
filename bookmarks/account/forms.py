@@ -1,5 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
+
 from .models import Profile
 
 
@@ -25,6 +27,12 @@ class UserRegistrationForm(forms.ModelForm):
             raise forms.ValidationError("Passwords don't match.")
         return cd['password2']
 
+    def clean_email(self):
+        cd = self.cleaned_data['email']
+        if User.objects.filter(email=cd).exists():
+            raise forms.ValidationError("Email already exists.")
+        return cd
+
 
 # This will allow users to edit their first name, last name, and email, which are
 # attributes of the built-in Django user model.
@@ -32,6 +40,16 @@ class UserEditForm(forms.ModelForm):
     class Meta:
         model = get_user_model()
         fields = ['first_name', 'last_name', 'email']
+
+    def clean_email(self):
+        cd = self.cleaned_data['email']
+        # Query the database for any users with this email, excluding the current user
+        qs = User.objects.exclude(
+            id=self.instance.id     # prevents the current user from being counted in this check
+        ).filter(email=cd)          # looks for users with the submitted email
+        if qs.exists():
+            raise forms.ValidationError("Email already in use.")
+        return cd       # if we get here, the email is unique, so return it
 
 
 # This will allow users to edit the profile data that is saved in the custom Profile model.
