@@ -160,3 +160,23 @@ from decouple import config
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = config('GOOGLE_OAUTH2_KEY')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config('GOOGLE_OAUTH2_SECRET')
+
+# Adding Social Auth Pipeline
+# This is the default authentication pipeline used by Python Social Auth. It consists of several functions that
+# preform different tasks when authenticating a user.
+SOCIAL_AUTH_PIPELINE = [
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.user.create_user',
+    'account.authentication.create_profile',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+]
+# We have added the create_profile function after social_core.pipeline.create_user. At this point,
+# a User instance is available. The user can be an existing user or a new one created in this step of the
+# pipeline. The create_profile function uses the User instance to look up the related Profile object
+# and create a new one if necessary.
