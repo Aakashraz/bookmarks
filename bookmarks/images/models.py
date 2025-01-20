@@ -7,11 +7,16 @@ class Image(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='images_created',
                              on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
-    slug = models.SlugField(max_length=200, blank=True)
+    slug = models.SlugField(max_length=200, blank=True, unique=True)
     url = models.URLField(max_length=2000)
     image = models.ImageField(upload_to='images/%Y/%m/%d/')
     description = models.TextField(blank=True)
     created = models.DateTimeField(auto_now_add=True)
+    users_like = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name='images_liked',
+        blank=True
+    )
 
     class Meta:
         indexes = [models.Index(fields=['-created'])]
@@ -25,7 +30,10 @@ class Image(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
+            # Convert title to URL-friendly format
+            # Example: "My Blog Post" -> "my-blog-post"
             self.slug = slugify(self.title)
+        # call parent class's save() method
         super().save(*args, **kwargs)
     # When an Image object is saved, if the slug field doesn’t have a value, the slugify() function is used
     # to automatically generate a slug from the title field of the image. The object is then saved
