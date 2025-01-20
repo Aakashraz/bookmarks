@@ -10,6 +10,7 @@ class Image(models.Model):
     slug = models.SlugField(max_length=200, blank=True, unique=True)
     url = models.URLField(max_length=2000)
     image = models.ImageField(upload_to='images/%Y/%m/%d/')
+    # In Django models, when you define an ImageField, it creates an attribute that handles file uploads.
     description = models.TextField(blank=True)
     created = models.DateTimeField(auto_now_add=True)
     users_like = models.ManyToManyField(
