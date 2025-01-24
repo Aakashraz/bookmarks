@@ -14,7 +14,7 @@ def image_create(request):
             # form data is valid
             cd = form.cleaned_data
             new_image = form.save(commit=False)
-            # assign current user to the item
+            # assign current user to the item. This is how we will know who uploaded each image.
             new_image.user = request.user
             new_image.save()
             messages.success(request, 'Image was successfully added')
@@ -25,6 +25,6 @@ def image_create(request):
         form = ImageCreateForm(data=request.GET)
     return render(
         request,
-        'image/image/create.html',
+        'images/image/create.html',
         {'section': 'images', 'form': form}
     )
