@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Dashboard{% endblock %}
 
@@ -21,10 +22,14 @@
         image {{ total_images_created|pluralize }}.
     </p>
     {% endwith %}
-    <p>Drag the following button to your bookmarks toolbar to bookmark images
-        from other websites → <a href="javascript:{% include 'bookmarklet_launcher.js' %}"
-                                  class="button">Bookmark it </a>
-    </p>
+
+    <!-- Load JS content into a variable first -->
+    {% with bookmarklet_js='include "bookmarklet_launcher.js"' %}
+        <p>Drag the following button to your bookmarks toolbar to bookmark images
+            from other websites → <a href="javascript:{{ bookmarklet_js|urlencode}}"
+                                      class="button">Bookmark it </a>
+        </p>
+    {% endwith %}
 <!-- &rarr also refers to the '→' symbol -->
     <p>
         Welcome to your dashboard.
