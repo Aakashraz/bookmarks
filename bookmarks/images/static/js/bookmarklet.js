@@ -1,14 +1,13 @@
 (function () {
     const siteUrl = 'https://127.0.0.1:8000/';
     const styleUrl = siteUrl + 'static/css/bookmarklet.css';
-    const minWidth = 250;
-    const minHeight = 250;
-
+    const minWidth = 150;
+    const minHeight = 150;
 
 // load CSS
-    var head = document.getElementsByTagName('head')[0];
+    let head = document.getElementsByTagName('head')[0];
 // It first gets a reference to the <head> element of the current web page
-    var link = document.createElement('link');
+    let link = document.createElement('link');
 // It then creates a new <link> element
     link.rel = 'stylesheet';
     link.type = 'text/css';
@@ -40,8 +39,14 @@
 // function to launch the bookmarklet
     // define a global function
     window.bookmarkletLaunch = function() {
-        let bookmarklet = document.getElementById('bookmarklet');
-        var imagesFound = bookmarklet.querySelector('.images');
+        const bookmarklet = document.getElementById('bookmarklet');
+        if (!bookmarklet) {
+            console.error('Bookmarklet container not found!');
+        }
+        const imagesFound = bookmarklet.querySelector('.images');
+        if (!imagesFound) {
+            console.error('.images container not found!')
+        }
 
         // the image container is cleared by setting its innerHTML attribute to an empty string
         imagesFound.innerHTML = '';
@@ -51,10 +56,12 @@
         // close button event
         // When  users click the element, the bookmarklet's main container is hidden by setting
         // its 'display' property to 'none'.
-        bookmarklet.querySelector('#close')
-            .addEventListener('click', function() {
-                bookmarklet.style.display = 'none'
-            })
+        const closeButton = bookmarklet.querySelector('#close');
+            if (closeButton) {
+                closeButton.addEventListener('click', function() {
+                    bookmarklet.style.display = 'none';
+                })
+            }
 
         // find images in the DOM with the minimum dimensions
         let images = document.querySelectorAll('img[src$=".jpg"], img[src$=".jpeg"], img[src$=".png"]');
@@ -63,11 +70,12 @@
 
         // The arrow function syntax image => {} is essentially syntactic sugar for
         // a traditional function declaration function(image) {}.
+
         images.forEach(image => {
             if (image.naturalWidth >= minWidth && image.naturalHeight >= minHeight) {
-                var imageFound = document.createElement('img');
-                imageFound.src = image.src;
-                imagesFound.append(imageFound);
+                let imageElement = document.createElement('img');
+                imageElement.src = image.src;
+                imagesFound.append(imageElement);
                 console.log("IMAGES ADDED TO BOOKMARKLET");
             }
             // A new <img> element is created for each image found, where the src source URL attribute is
