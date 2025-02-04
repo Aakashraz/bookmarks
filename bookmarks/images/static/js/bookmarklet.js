@@ -1,8 +1,8 @@
 (function () {
     const siteUrl = 'https://127.0.0.1:8000/';
     const styleUrl = siteUrl + 'static/css/bookmarklet.css';
-    const minWidth = 150;
-    const minHeight = 150;
+    const minWidth = 20;
+    const minHeight = 20;
 
 // load CSS
     let head = document.getElementsByTagName('head')[0];
@@ -21,16 +21,16 @@
 
 
 // load HTML
-    var body = document.getElementsByTagName('body')[0]
+    let body = document.getElementsByTagName('body')[0]
 // Define an HTML template as a string that will be injected into the page
-    boxHtml = `
-    <div id="bookmarklet">
-<!--    A close button (<a> with &times; which displays an "×" symbol)-->
-    <a href="#" id="close">&times;</a>
-    <h1>Select an image to bookmark:</h1>
-    <div class="images"></div>
-    <!-- This container is initially empty and will be filled with the images found on the site. -->
-    </div>`;
+    let boxHtml = `
+        <div id="bookmarklet">
+    <!--    A close button (<a> with &times; which displays an "×" symbol)-->
+        <a href="#" id="close">&times;</a>
+        <h1>Select an image to bookmark:</h1>
+        <div class="images"></div>
+        <!-- This container is initially empty and will be filled with the images found on the site. -->
+        </div>`;
     body.innerHTML += boxHtml;
 // body.innerHTML += boxHtml appends the entire HTML template to the existing content of the <body> element.
 // The += operator means this new content is added to the end of whatever already exists in the body,

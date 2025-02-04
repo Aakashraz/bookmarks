@@ -24,10 +24,9 @@
     {% endwith %}
 
     <!-- Load JS content into a variable first -->
-    {% with bookmarklet_js='include "bookmarklet_launcher.js"' %}
+    {% with launcher_url='//127.0.0.1:8000/static/js/bookmarklet_launcher.js' %}
         <p>Drag the following button to your bookmarks toolbar to bookmark images
-            from other websites → <a href="javascript:{{ bookmarklet_js|urlencode}}"
-                                      class="button">Bookmark it </a>
+            from other websites → <a href="javascript:(function(){let s = document.createElement('script');s.src='{{ launcher_url }}';document.body.appendChild(s);})();" class="button">Bookmark it </a>
         </p>
     {% endwith %}
 <!-- &rarr also refers to the '→' symbol -->
