@@ -1,8 +1,8 @@
 (function () {
     const siteUrl = 'https://127.0.0.1:8000/';
     const styleUrl = siteUrl + 'static/css/bookmarklet.css';
-    const minWidth = 20;
-    const minHeight = 20;
+    const minWidth = 100;
+    const minHeight = 100;
 
 // load CSS
     let head = document.getElementsByTagName('head')[0];
@@ -86,7 +86,27 @@
         if (imagesFound.children.length === 0) {
             console.warn('NO IMAGES MEETING SIZE CRITERIA FOUND.')
         }
+
+        // select image event
+        imagesFound.querySelectorAll('img').forEach(image => {
+            image.addEventListener('click', function(event){
+                // When the event is triggered (i.e. when an image is clicked), event.target refers
+                // to the image element that was clicked.
+                let imageSelected = event.target;
+                // the bookmarklet is then hidden by setting its display property to none.
+                bookmarklet.style.display = 'none';
+                window.open(siteUrl + 'images/create/?url='
+                + encodeURIComponent(imageSelected.src)
+                + '&title='
+                + encodeURIComponent(document.title),
+                '_blank');
+                // A new browser window is opened with the URL to bookmark a new image on the site. The
+                // content of the <title> element of the website is passed to the URL in the title GET parameter
+                // and the selected image URL is passed in the url parameter.
+            })
+        })
     }
+
 // launch the bookmarklet
     window.bookmarkletLaunch();
 })();
