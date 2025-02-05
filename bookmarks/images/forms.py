@@ -40,10 +40,12 @@ class ImageCreateForm(forms.ModelForm):
         # so Django can save it as a file. The image is saved to your configured media storage
         # using the generated filename.
         response = requests.get(image_url)
-        image.image.save(image_name, ContentFile(response.content))
+        # only save the image file, not the whole model, to counterpart the integrity error
+        image.image.save(image_name, ContentFile(response.content), save=False)
         # The first 'image' refers to model instance
         # The second 'image' refers to the ImageField attribute in your model
 
+        # let the view handle the final save
         if commit:
             image.save()
         return image
