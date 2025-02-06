@@ -1,8 +1,8 @@
 (function () {
     const siteUrl = 'https://127.0.0.1:8000/';
     const styleUrl = siteUrl + 'static/css/bookmarklet.css';
-    const minWidth = 100;
-    const minHeight = 100;
+    const minWidth = 200;
+    const minHeight = 200;
 
 // load CSS
     let head = document.getElementsByTagName('head')[0];

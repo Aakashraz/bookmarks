@@ -4,7 +4,15 @@
 
 {% block content %}
     <h1>{{ image.title }}</h1>
-    <img src="{{ image.image.url }}" class="image-detail">
+<!--    <img src="{{ image.image.url }}" class="image-detail" alt="">-->
+    {% load thumbnail %}
+    <a href="{{ image.image.url }}">    <!-- Links to the full-size saved image -->
+        <img src="{% thumbnail image.image 300x0 %}" class="image-detail">  <!-- Creates and displays a thumbnail -->
+    </a>
+<!--image.url refers to the URL field in your model, which stores the original location where you found the image online
+image.image refers to the ImageField in your model, which stores the actual image file you downloaded and saved
+image.image.url gives you the URL path to access the saved image file in your media storage-->
+
     {% with total_likes=image.users_like.count %}
         <div class="image-info">
             <div>
