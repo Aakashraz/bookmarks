@@ -61,8 +61,13 @@ def image_like(request):
             image = Image.objects.get(id=image_id)
             if action == 'like':
                 image.users_like.add(request.user)
+            # This line adds the currently logged-in user (request.user) to the users_like set of the image object.
+            # This establishes a relationship in the database that this user now "likes" this image.
             else:
                 image.users_like.remove(request.user)
+            # When a user clicks an "unlike" button (or toggles from "like" to "unlike"), this line removes the
+            # currently logged-in user (request.user) from the users_like set of the image. This breaks the
+            # relationship, indicating the user no longer "likes" the image.
             return JsonResponse({'status': 'ok'})
         except Image.DoesNotExist:
             pass

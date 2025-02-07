@@ -16,8 +16,8 @@ class Image(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     users_like = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
-        related_name='images_liked',
-        blank=True
+        related_name='images_liked',    # This defines the reverse relationship. From a User object, you can access all the images they've liked using user.images_liked.all().
+        blank=True                      # Allow no likes initially
     )
 
     class Meta:
