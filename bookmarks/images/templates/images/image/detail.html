@@ -56,20 +56,33 @@ image.image.url gives you the URL path to access the saved image file in your me
     document.querySelector('a.like').addEventListener('click', function(e) {
         e.preventDefault();
         let likeButton = this;
-    });
 
-    // add request body
-    let formData = new FormData();
-    formData.append('id', likeButton.dataset.id);
-    formData.append('action', likeButton.dataset.action);
-    options['body'] = formData;
+        // add request body
+        let formData = new FormData();
+        formData.append('id', likeButton.dataset.id);
+    <!-- This line takes the value from the clicked like button’s data-id attribute (accessible via likeButton.dataset.id) and assigns it to the key 'id'.-->
+        formData.append('action', likeButton.dataset.action);
+    <!-- Similarly, it appends the value from the data-action attribute (which tells you whether the action is to "like" or "unlike") under the key 'action'.-->
+        options['body'] = formData;
 
-    // send HTTP request
-    fetch(url, options)
-    .then(response => response.json())
-    .then(data => {
-        if (data['status'] === 'ok'){
+        // send HTTP request
+        fetch(url, options)
+        .then(response => response.json())
+        .then(data => {
+            if (data['status'] === 'ok'){
+                let previousAction = likeButton.dataset.action;
+
+                // toggle button text and data-action
+                let action = previousAction === 'like' ? 'unlike' : 'like';
+                likeButton.dataset.action = action;
+                likeButton.innerHTML = action;
+
+                //update like count
+                let likeCount = document.querySelector('span.count.total');
+                let totalLikes = parseInt(likeCount.innerHTML);
+                likeCount.innerHTML = previousAction === 'like' ? totalLikes + 1 : totalLikes - 1
             }
         });
+    });
 
 {% endblock %}
