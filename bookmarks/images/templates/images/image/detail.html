@@ -47,42 +47,67 @@ image.image.url gives you the URL path to access the saved image file in your me
 {% endblock %}
 
 {% block domready %}
-    const url = '{% url "images:like" %};
-    let options = {
+    const url = '{% url "images:like" %}';
+    const options = {
         method: 'POST',
         headers: {'X-CSRFToken': csrftoken},
         mode: 'same-origin'
     }
     document.querySelector('a.like').addEventListener('click', function(e) {
         e.preventDefault();
-        let likeButton = this;
+        let likeButton = this;  // 'this' is the <a> element with class 'like' that was clicked
 
         // add request body
         let formData = new FormData();
         formData.append('id', likeButton.dataset.id);
-    <!-- This line takes the value from the clicked like button’s data-id attribute (accessible via likeButton.dataset.id) and assigns it to the key 'id'.-->
+    <!-- This line takes the value from the clicked like button’s data-id attribute (accessible via likeButton.dataset.id) and assigns it to the key 'id'.&ndash;&gt;-->
         formData.append('action', likeButton.dataset.action);
-    <!-- Similarly, it appends the value from the data-action attribute (which tells you whether the action is to "like" or "unlike") under the key 'action'.-->
+    <!-- Similarly, it appends the value from the data-action attribute (which tells you whether the action is to "like" or "unlike") under the key 'action'.&ndash;&gt;-->
         options['body'] = formData;
+        console.log(`likeButton.dataset.id before: ${likeButton.dataset.id}`)
+        console.log(`likeButton.dataset.action before: ${likeButton.dataset.action}`)
 
         // send HTTP request
         fetch(url, options)
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);  // Throw an error to be caught by .catch()
+            }
+            return response.json();
+        })
         .then(data => {
             if (data['status'] === 'ok'){
                 let previousAction = likeButton.dataset.action;
 
                 // toggle button text and data-action
-                let action = previousAction === 'like' ? 'unlike' : 'like';
-                likeButton.dataset.action = action;
-                likeButton.innerHTML = action;
+                let newAction = previousAction === 'like' ? 'unlike' : 'like';
+                likeButton.dataset.action = newAction;
+                likeButton.innerHTML = newAction;
 
                 //update like count
-                let likeCount = document.querySelector('span.count.total');
+                let likeCount = document.querySelector('span.count .total');
+                // Add this line to check if likeCount is correctly selected
+                console.log(`Current Like count: ${likeCount}`);
+
                 let totalLikes = parseInt(likeCount.innerHTML);
+                console.log(`totalLikes: ${totalLikes}`)
                 likeCount.innerHTML = previousAction === 'like' ? totalLikes + 1 : totalLikes - 1
+                console.log(`likeButton.dataset.id after: ${likeButton.dataset.id}`)
+                console.log(`likeButton.dataset.action after: ${likeButton.dataset.action} \n`)
+
+<!--                // Update the 'like/likes' word dynamically-->
+<!--                let likeWordSpan = document.querySelector('span.count');-->
+<!--                let likeWord = totalLikes === 1 ? 'like' : 'likes';-->
+<!--                // Update the parent span's innerHTML-->
+<!--                likeWordSpan.innerHTML = `<span class = "total">${totalLikes}</span> ${likeWord}`;-->
+            } else {
+                console.error("Server-side error:", data);
             }
+        })
+        .catch(error => {
+            console.error("Fetch method error: ", error);
+            // Optionally display a user-friendly error message on the page
+            alert("An error occurred while processing your request. Please try again later");
         });
     });
-
 {% endblock %}
