@@ -1,11 +1,16 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.template import TemplateDoesNotExist
+from django.template.loader import get_template
+
 from .forms import ImageCreateForm
 from .models import Image
 
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.http import HttpResponse
 
 
 @login_required
@@ -72,3 +77,40 @@ def image_like(request):
         except Image.DoesNotExist:
             pass
     return JsonResponse({'status': 'error'})
+
+
+@login_required
+def image_list(request):
+    # to debug the template don't exist error
+    # try:
+    #     get_template('images/image/list_images.html')
+    #     print("Template list_images found!")
+    #     get_template('images/image/list.html')
+    #     print("Template list found!")
+    # except TemplateDoesNotExist as e:
+    #     print(f"Template error: {e}")
+
+    images = Image.objects.all()
+    paginator = Paginator(images, 8)
+    page = request.GET.get('page')
+    images_only = request.GET.get('images_only')
+    try:
+        images = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer deliver the first page
+        images = paginator.page(1)
+    except EmptyPage:
+        if images_only:
+            # If AJAX request and page out of range return an empty page
+            return HttpResponse('')
+        # If page out of range return last page of results
+        images = paginator.page(paginator.num_pages)
+    if images_only:
+        return render(
+            request,
+            'images/image/list_images.html',
+            {'section': 'images', 'images': images}
+        )
+    return render(
+        request,'images/image/list.html',{'section': 'images', 'images': images}
+    )

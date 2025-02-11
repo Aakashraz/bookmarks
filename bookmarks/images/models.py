@@ -31,10 +31,17 @@ class Image(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        if not self.slug:
+        if not self.slug:   # Generate slug only if it's not already set (for new images).
             # Convert title to URL-friendly format
             # Example: "My Blog Post" -> "my-blog-post"
-            self.slug = slugify(self.title)
+            base_slug = slugify(self.title)
+            counter = 1
+            while Image.objects.filter(slug=base_slug).exists():    # check for uniqueness of the slug
+                # Append counter for uniqueness
+                base_slug = f'{base_slug}-{counter}'
+                counter += 1
+            self.slug = base_slug
+
         # call parent class's save() method
         super().save(*args, **kwargs)
     # When an Image object is saved, if the slug field don’t have a value, the slugify() function is used

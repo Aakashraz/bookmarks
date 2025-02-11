@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Images bookmarked{% endblock %}
+
+{% block content %}
+    <h1>Images bookmarked</h1>
+    <div id="image-list">
+        {% include "images/image/list_images.html" %}
+    </div>
+{% endblock %}
+
+{% block domready %}
+    let page = 1;
+    let emptyPage = false;
+    let blockRequest = false;   // Prevents you from sending additional requests while an HTTP request is in progress
+
+    window.addEventListener('scroll', function(e) {
+        let margin = document.body.clientHeight - window.innerHeight - 200;
+        if(window.pageYOffset > margin && !emptyPage && !blockRequest) {
+            blockRequest = true;    // BLock further requests
+            page +=1;               // Move to the next page
+            fetch('?image_only=1&page=' + page)
+            .then(response => response.text())
+            .then(html => {
+                if (html === '') {
+                    emptyPage = true;   // No more images to load
+                } else {
+                    let imageList = document.getElementById('image-list');
+                    imageList.insertAdjacentHTML('beforeEnd', html);
+                    blockRequest = false;   // Allow new requests
+                }
+            }).
+            catch(error => {
+                console.error('Error fetching images: ', error);
+                blockRequest = false;   // Reset on error
+            })
+        }
+    });
+
+    // Launch scroll event
+    const scrollEvent = new Event('scroll');
+    window.dispatchEvent(scrollEvent);
+
+{% endblock %}
+
+
+
+<!--
+blockRequest: "Is a request blocked?"
+
+true: Yes, a request is blocked (one is in progress).
+
+false: No, a request is not blocked (no request is in progress).
+
+Analogy:
+Imagine a kitchen where only one cook can prepare a dish at a time:
+
+blockRequest = false;
+
+The kitchen is free; no one is cooking.
+
+!blockRequest = true; (It's okay to start cooking.)
+
+Starting to Cook:
+
+A cook enters the kitchen.
+
+blockRequest = true; (The kitchen is now occupied.)
+
+!blockRequest = false; (Not okay to start cooking; someone is already cooking.)
+
+Finishing Cooking:
+
+The cook leaves the kitchen.
+
+blockRequest = false; (The kitchen is free again.)
+
+!blockRequest = true; (It's okay for the next cook to start.) -->
