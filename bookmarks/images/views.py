@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.template import TemplateDoesNotExist
+from django.template.loader import get_template
+
 from .forms import ImageCreateForm
 from .models import Image
 
@@ -78,6 +81,15 @@ def image_like(request):
 
 @login_required
 def image_list(request):
+    # to debug the template don't exist error
+    # try:
+    #     get_template('images/image/list_images.html')
+    #     print("Template list_images found!")
+    #     get_template('images/image/list.html')
+    #     print("Template list found!")
+    # except TemplateDoesNotExist as e:
+    #     print(f"Template error: {e}")
+
     images = Image.objects.all()
     paginator = Paginator(images, 8)
     page = request.GET.get('page')
@@ -100,7 +112,5 @@ def image_list(request):
             {'section': 'images', 'images': images}
         )
     return render(
-        request,
-        'images/image/list.html',
-        {'section': 'images', 'images': images}
+        request,'images/image/list.html',{'section': 'images', 'images': images}
     )
