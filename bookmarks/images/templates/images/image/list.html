@@ -19,7 +19,7 @@
         if(window.pageYOffset > margin && !emptyPage && !blockRequest) {
             blockRequest = true;    // BLock further requests
             page +=1;               // Move to the next page
-            fetch('?image_only=1&page=' + page)
+            fetch('?images_only=1&page=' + page)
             .then(response => response.text())
             .then(html => {
                 if (html === '') {

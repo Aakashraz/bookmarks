@@ -91,11 +91,14 @@ def image_list(request):
     #     print(f"Template error: {e}")
 
     images = Image.objects.all()
-    paginator = Paginator(images, 8)
+    paginator = Paginator(images, 6)
     page = request.GET.get('page')
     images_only = request.GET.get('images_only')
     try:
         images = paginator.page(page)
+    #   Alternatively can also be used the below code:
+    #   images = paginator.get_page(page)
+
     except PageNotAnInteger:
         # If page is not an integer deliver the first page
         images = paginator.page(1)
