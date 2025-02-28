@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from django.urls import reverse_lazy
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -181,3 +182,7 @@ SOCIAL_AUTH_PIPELINE = [
 # a User instance is available. The user can be an existing user or a new one created in this step of the
 # pipeline. The create_profile function uses the User instance to look up the related Profile object
 # and create a new one if necessary.
+
+ABSOLUTE_URL_OVERRIDES = {
+    'auth.user': lambda u: reverse_lazy('user_detail', args=[u.username])
+}

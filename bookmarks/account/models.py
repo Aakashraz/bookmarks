@@ -38,6 +38,7 @@ class Contact(models.Model):
 
 
 # Add the following field to User dynamically
+# add_to_class(name, value): A method that adds an attribute to an existing class after it's been defined.
 user_model = get_user_model()
 user_model.add_to_class(
     'following',
