@@ -183,6 +183,15 @@ SOCIAL_AUTH_PIPELINE = [
 # pipeline. The create_profile function uses the User instance to look up the related Profile object
 # and create a new one if necessary.
 
+
+# To override the default behaviour of get_absolute_url() for specific model.
 ABSOLUTE_URL_OVERRIDES = {
     'auth.user': lambda u: reverse_lazy('user_detail', args=[u.username])
 }
+# Here, the key 'auth.user' targets the built-in User model.
+# The value is a lambda function that takes a user instance (u) and returns a URL generated
+# by reverse_lazy('user_detail', args=[u.username]). This effectively means that whenever
+# you call get_absolute_url() on a User instance, Django will use this lambda to produce the URL.
+
+# To debug thumbnail information in the shell
+# THUMBNAIL_DEBUG = True
