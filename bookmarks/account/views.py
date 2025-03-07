@@ -139,6 +139,10 @@ def user_follow(request):
     if user_id and action:
         try:
             user = User.objects.get(id=user_id)
+            # Prevent the user from following themselves.
+            if user == request.user:
+                return JsonResponse({'status': 'error', 'message': 'You cannot follow yourself.'})
+
             if action == 'follow':
                 Contact.objects.get_or_create(user_from=request.user, user_to=user)
             else:
