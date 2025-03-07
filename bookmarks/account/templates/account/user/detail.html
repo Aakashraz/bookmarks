@@ -13,19 +13,24 @@
             <span class="total">{{ total_followers }}</span>
             follower{{ total_followers|pluralize }}
         </span>
-        <a href="#" data-id="{{ user.id }}" data-action="{% if request.user in user.followers.all %}un{% endif %}follow"
-           class="follow button">
-           {% if request.user not in user.followers.all %}
-            Follow
-            {% else %}
-            Unfollow
-            {% endif %}
-        </a>
+<!--Checking if the user and request.user are same,this will remove the --follow button from the page.-->
+        {% if user != request.user %}
+            <a href="#" data-id="{{ user.id }}" data-action="{% if request.user in user.followers.all %}un{% endif %}follow"
+               class="follow button">
+               {% if request.user not in user.followers.all %}
+                Follow
+                {% else %}
+                Unfollow
+                {% endif %}
+            </a>
+        {% endif %}
+
         <!-- user:
         This represents the profile owner—the user whose profile page is being displayed.
 
         request.user:
         This represents the currently logged-in user who is viewing the page.-->
+
         <div id="image-list" class="image-container">
             {% include "images/image/list_images.html" with images=user.images_created.all %}
         </div>
@@ -55,10 +60,11 @@ document.querySelector('a.follow')
         fetch(url, options)
         .then(response => response.json())
         .then(data => {
+            console.log(data);
             if (data['status'] === 'ok'){
                 var previousAction = followButton.dataset.action;
 
-                // toggle button text and dat-action
+                // toggle button text and data-action
                 var action = previousAction === 'follow' ? 'unfollow' : 'follow';
                 followButton.dataset.action = action;
                 followButton.innerHTML = action;
