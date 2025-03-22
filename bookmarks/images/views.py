@@ -11,7 +11,7 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import HttpResponse
-from actions.utils import create_action
+from ..actions.utils import create_action
 
 
 @login_required
@@ -33,6 +33,8 @@ def image_create(request):
                 print(f"After user assignment: Image ID={new_image.id}, User={new_image.user}")
                 new_image.save()
                 print(f"After SAVE: Image ID={new_image.id}, User={new_image.user}")
+                create_action(request.user, 'bookmarked image', new_image)
+
                 messages.success(request, 'Image was successfully added')
                 # redirect to new created item detail view
                 return redirect(new_image.get_absolute_url())
@@ -67,6 +69,7 @@ def image_like(request):
             image = Image.objects.get(id=image_id)
             if action == 'like':
                 image.users_like.add(request.user)
+                create_action(request.user, 'likes', image)
             # This line adds the currently logged-in user (request.user) to the users_like set of the image object.
             # This establishes a relationship in the database that this user now "likes" this image.
             else:

@@ -6,6 +6,7 @@ from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditFor
 from .models import Profile, Contact
 from django.contrib import messages
 from django.views.decorators.http import require_POST
+from ..actions.utils import create_action
 
 
 def user_login(request):
@@ -62,6 +63,8 @@ def register(request):
             # When users register on the site, a corresponding Profile object will be automatically created and
             # associated with the User object created. However, users created through the administration site won’t
             # automatically get an associated Profile object
+
+            create_action(new_user, 'has create an account')
             return render(request,
                           'account/register_done.html',
                           {'new_user': new_user}
@@ -145,6 +148,7 @@ def user_follow(request):
 
             if action == 'follow':
                 Contact.objects.get_or_create(user_from=request.user, user_to=user)
+                create_action(request.user, 'is following', user)
             else:
                 Contact.objects.filter(user_from=request.user, user_to=user).delete()
             return JsonResponse({'status':'ok'})
