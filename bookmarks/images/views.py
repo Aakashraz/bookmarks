@@ -37,6 +37,7 @@ def image_create(request):
                 create_action(request.user, 'bookmarked image', new_image)
                 # After a user submits a form to create an image and the image is saved, the action bookmarked image
                 # is recorded. This logs that the user has bookmarked the new image
+
                 messages.success(request, 'Image was successfully added')
                 # redirect to new created item detail view
                 return redirect(new_image.get_absolute_url())

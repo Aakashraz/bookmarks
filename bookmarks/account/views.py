@@ -67,6 +67,7 @@ def register(request):
             create_action(new_user, 'has create an account')
             # After a new user account is created and the associated profile is saved, the action has created
             # an account is logged. This captures the event of a new user registration.
+
             return render(request,
                           'account/register_done.html',
                           {'new_user': new_user}
@@ -154,6 +155,7 @@ def user_follow(request):
                 # When a user follows another user, the relationship is created (or removed, in the case of
                 # unfollowing). In the case of following, the action is following is logged to record that the
                 # current user has started following someone else
+
             else:
                 Contact.objects.filter(user_from=request.user, user_to=user).delete()
             return JsonResponse({'status':'ok'})
