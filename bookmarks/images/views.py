@@ -11,6 +11,7 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import HttpResponse
+from ..actions.utils import create_action
 
 
 @login_required
@@ -32,6 +33,11 @@ def image_create(request):
                 print(f"After user assignment: Image ID={new_image.id}, User={new_image.user}")
                 new_image.save()
                 print(f"After SAVE: Image ID={new_image.id}, User={new_image.user}")
+
+                create_action(request.user, 'bookmarked image', new_image)
+                # After a user submits a form to create an image and the image is saved, the action bookmarked image
+                # is recorded. This logs that the user has bookmarked the new image
+
                 messages.success(request, 'Image was successfully added')
                 # redirect to new created item detail view
                 return redirect(new_image.get_absolute_url())
@@ -66,8 +72,13 @@ def image_like(request):
             image = Image.objects.get(id=image_id)
             if action == 'like':
                 image.users_like.add(request.user)
-            # This line adds the currently logged-in user (request.user) to the users_like set of the image object.
-            # This establishes a relationship in the database that this user now "likes" this image.
+                # This line adds the currently logged-in user (request.user) to the users_like set of the image object.
+                # This establishes a relationship in the database that this user now "likes" this image.
+                create_action(request.user, 'likes', image)
+                # When a user likes an image, the image is added to the user’s liked images. Immediately after,
+                # an action likes is created, logging that the user liked that particular image.
+                # If the like is undone (i.e., removed), no action is logged.
+
             else:
                 image.users_like.remove(request.user)
             # When a user clicks an "unlike" button (or toggles from "like" to "unlike"), this line removes the
