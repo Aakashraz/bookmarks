@@ -17,16 +17,19 @@ class Profile(models.Model):
 
 # Intermediate model to build relationship between users.
 class Contact(models.Model):
+    # The user who initiates the follow
     user_from = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name='rel_from_set',
         on_delete=models.CASCADE
     )
+    # The user being followed
     user_to = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name='rel_to_set',
         on_delete=models.CASCADE
     )
+    # When the follow relationship was established
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -40,6 +43,7 @@ class Contact(models.Model):
 # Add the following field to User dynamically
 # add_to_class(name, value): A method that adds an attribute to an existing class after it's been defined.
 user_model = get_user_model()
+# Gets the active User model with get_user_model() (which might be Django's built-in User or a custom one)
 user_model.add_to_class(
     'following',
     models.ManyToManyField(
