@@ -11,7 +11,7 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import HttpResponse
-from ..actions.utils import create_action
+from actions.utils import create_action
 
 
 @login_required

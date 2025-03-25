@@ -7,8 +7,8 @@ from .models import Profile, Contact
 from django.contrib import messages
 from django.views.decorators.http import require_POST
 
-from ..actions.utils import create_action
-from ..actions.models import Action
+from actions.utils import create_action
+from actions.models import Action
 
 def user_login(request):
     if request.method == 'POST':
@@ -55,7 +55,7 @@ def dashboard(request):
         actions = actions.filter(user_id__in=following_ids)
 
     # This restricts the results to just first 10 actions
-    actions = actions.select_related('user', 'user__profile')[:10]
+    actions = actions.select_related('user', 'user__profile').prefetch_related('target')[:10]
     # The 'user__profile' part uses Django's double underscore notation to "traverse" relationships:
     # 'user' tells Django to follow the foreign key from Action to User
     # 'user__profile' tells Django to then follow the relationship from User to Profile
