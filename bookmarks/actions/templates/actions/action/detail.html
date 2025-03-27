@@ -1,19 +1,24 @@
 {% load thumbnail %}
 
+<!--Assign variables for the user and profile associated with the action-->
 {% with user=action.user profile=action.user.profile %}
 <div class="action">
     <div class="images">
-        {% if profile.photo %}
+        {% if profile.photo %}      <!-- Check if the user has a profile photo -->
+<!--        Generate an 80x80 thumbnail of the profile photo-->
             {% thumbnail user.profile.photo "80x80" crop="100%" as im %}
+<!--        Link to the user's profile page-->
             <a href="{{ user.get_absolute_url }}">
                 <img src="{{ im.url }}" alt="{{ user.get_full_name }}"
                      class="item-img">
             </a>
         {% endif %}
 
+<!--        Check if the action has a target object (e.g., a post, image, or user)-->
         {% if action.target %}
-            {% with target=action.target %}
-                {% if target.image %}
+            {% with target=action.target %}     <!-- Assign a target object to a variable -->
+                {% if target.image %}           <!-- Check if the target has an image field -->
+<!--                     Generate an 80x80 thumbnail of the target's image-->
                     {% thumbnail target.image "80x80" crop="100%" as im %}
                     <a href="{{ target.get_absolute_url }}">
                         <img src="{{ im.url }}" class="item-img">

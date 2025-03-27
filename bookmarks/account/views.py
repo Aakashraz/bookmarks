@@ -54,7 +54,9 @@ def dashboard(request):
         # If user is following others, retrieve only their actions
         actions = actions.filter(user_id__in=following_ids)
 
-    # This restricts the results to just first 10 actions
+    # This restricts the results to just first 10 actions.
+    # select_related('user', 'user__profile') → Reduces database hits for User and Profile.
+    # prefetch_related('target') → Efficiently loads generic foreign key targets (e.g., posts, images).
     actions = actions.select_related('user', 'user__profile').prefetch_related('target')[:10]
     # The 'user__profile' part uses Django's double underscore notation to "traverse" relationships:
     # 'user' tells Django to follow the foreign key from Action to User
@@ -67,7 +69,7 @@ def dashboard(request):
     return render(
         request,
         'account/dashboard.html',
-        {'section': 'dashboard'}
+        {'section': 'dashboard', 'actions': actions}
     )
 
 

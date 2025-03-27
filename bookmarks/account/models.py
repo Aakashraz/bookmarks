@@ -16,6 +16,15 @@ class Profile(models.Model):
 
 
 # Intermediate model to build relationship between users.
+#
+# When a user follows another (user_follow view):
+# A Contact record is created (user_from=request.user, user_to=target_user).
+# An Action is logged ("X is following Y").
+# The following field (dynamically added to User) allows:
+#
+# user.following.all() → Users this user follows.
+#
+# user.followers.all() → Users following this user.
 class Contact(models.Model):
     # The user who initiates the follow
     user_from = models.ForeignKey(
