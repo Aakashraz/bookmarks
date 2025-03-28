@@ -19,9 +19,14 @@ class Image(models.Model):
         related_name='images_liked',    # This defines the reverse relationship. From a User object, you can access all the images they've liked using user.images_liked.all().
         blank=True                      # Allow no likes initially
     )
+    # Denormalization counts example
+    total_likes = models.PositiveIntegerField(default=0)    # to store the total count of users who like each image.
 
     class Meta:
-        indexes = [models.Index(fields=['-created'])]
+        indexes = [
+            models.Index(fields=['-created']),
+            models.Index(fields=['-total_likes']),
+        ]
         ordering = ['-created']
     #     Database indexes improve query performance. Consider creating indexes for fields that you frequently
     # query using filter(), exclude(), or order_by(). ForeignKey fields or fields with unique=True imply
