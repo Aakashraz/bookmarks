@@ -49,9 +49,12 @@ INSTALLED_APPS = [
     'images.apps.ImagesConfig',
     'easy_thumbnails',
     'actions.apps.ActionsConfig',
+    'debug_toolbar',
+
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -196,3 +199,12 @@ ABSOLUTE_URL_OVERRIDES = {
 
 # To debug thumbnail information in the shell
 # THUMBNAIL_DEBUG = True
+
+# For django_debug_toolbar
+INTERNAL_IPS = ['127.0.0.1']
+
+# Integrate Redis into project
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+REDIS_DB = 0
+

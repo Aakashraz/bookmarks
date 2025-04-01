@@ -6,8 +6,9 @@ from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditFor
 from .models import Profile, Contact
 from django.contrib import messages
 from django.views.decorators.http import require_POST
-from ..actions.utils import create_action
 
+from actions.utils import create_action
+from actions.models import Action
 
 def user_login(request):
     if request.method == 'POST':
@@ -38,10 +39,37 @@ def user_login(request):
 
 @login_required
 def dashboard(request):
+    # Display all actions by default
+    actions = Action.objects.exclude(user=request.user)
+
+    following_ids = request.user.following.values_list(
+        'id', flat=True
+    )
+    # when the code does request.user.following.values_list('id', flat=True), it's:
+    # Accessing the current user's "following" relationship
+    # Retrieving just the IDs of those followed users
+    # Getting them as a flat list (like [1, 5, 9]) rather than tuples (which would look like [(1,), (5,), (9,)])
+
+    if following_ids:
+        # If user is following others, retrieve only their actions
+        actions = actions.filter(user_id__in=following_ids)
+
+    # This restricts the results to just first 10 actions.
+    # select_related('user', 'user__profile') → Reduces database hits for User and Profile.
+    # prefetch_related('target') → Efficiently loads generic foreign key targets (e.g., posts, images).
+    actions = actions.select_related('user', 'user__profile').prefetch_related('target')[:10]
+    # The 'user__profile' part uses Django's double underscore notation to "traverse" relationships:
+    # 'user' tells Django to follow the foreign key from Action to User
+    # 'user__profile' tells Django to then follow the relationship from User to Profile
+    # It's like saying: "Start at Action, go to its User, then go to that User's Profile."
+    #
+    # We don't use order_by() in the QuerySet because we rely on the default ordering provided in the Meta options
+    # of the Action model. Recent actions will come first since we set ordering = ['-created'] in the Action model.
+
     return render(
         request,
         'account/dashboard.html',
-        {'section': 'dashboard'}
+        {'section': 'dashboard', 'actions': actions}
     )
 
 
