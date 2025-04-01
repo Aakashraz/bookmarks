@@ -202,3 +202,9 @@ ABSOLUTE_URL_OVERRIDES = {
 
 # For django_debug_toolbar
 INTERNAL_IPS = ['127.0.0.1']
+
+# Integrate Redis into project
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+REDIS_DB = 0
+
