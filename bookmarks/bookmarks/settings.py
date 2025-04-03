@@ -205,6 +205,6 @@ INTERNAL_IPS = ['127.0.0.1']
 
 # Integrate Redis into project
 REDIS_HOST = 'localhost'
-REDIS_PORT = 6379
+REDIS_PORT = 6000   # have used this port no. instead of default port no. 6379
 REDIS_DB = 0
 
