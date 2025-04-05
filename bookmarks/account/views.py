@@ -87,7 +87,7 @@ def register(request):
             new_user.save()
 
             # Create the user Profile
-            Profile.objects.create(user=new_user)
+            # Profile.objects.create(user=new_user)
             # When users register on the site, a corresponding Profile object will be automatically created and
             # associated with the User object created. However, users created through the administration site won’t
             # automatically get an associated Profile object
